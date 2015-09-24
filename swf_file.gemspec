@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.7"
 
   s.add_development_dependency('shoulda')
+  s.add_runtime_dependency('ruby-lzma')
 
   s.files             = Dir.glob("{lib}/**/*") + %w(LICENSE README.rdoc)
 
