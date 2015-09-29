@@ -19,12 +19,13 @@ module SwfFile
     private
       def buffer_compressed?(memoize_result = true)
         if memoize_result
-          @compressed ||= @buffer[0].ord == ?C.ord
+          @compressed ||= [?C.ord,?Z.ord].include?(@buffer[0].ord)
           @compression ||= @buffer[0].ord == ?C.ord ? 'zlib' : @buffer[0].ord == ?Z.ord ? 'lzma' : nil
         else
-          @compressed = @buffer[0].ord == ?C.ord
+          @compressed = [?C.ord,?Z.ord].include?(@buffer[0].ord)
           @compression ||= @buffer[0].ord == ?C.ord ? 'zlib' : @buffer[0].ord == ?Z.ord ? 'lzma' : nil
         end
+        @compressed
       end
 
       def decompress_zlib(buffer)
@@ -38,13 +39,11 @@ module SwfFile
         len = buffer[4..7].unpack('V').first - 8 
         lzma_props = buffer[12..16]
         compressed_data = buffer[17,buffer.size-17]
-        # Encoding::CompatibilityError: incompatible character encodings: ASCII-8BIT and UTF-8
-        LZMA.decompress(lzma_props.force_encoding('ASCII-8BIT') << [len].pack("Q").force_encoding('ASCII-8BIT') << compressed_data.force_encoding('ASCII-8BIT'))
+        LZMA.decompress(lzma_props << [len].pack("Q") << compressed_data)
       end
 
       def decompress_buffer!
         return @buffer unless buffer_compressed?(false)
-
         _buffer = @buffer # local buffer copy
         _buffer = @compression == 'zlib' ? decompress_zlib(_buffer) : decompress_lzma(_buffer)
         _buffer = _buffer[0,8] + _buffer
@@ -52,6 +51,8 @@ module SwfFile
 
         @buffer = _buffer
       end
+
+
 
       def strip_buffer_header(buffer,size)
         buffer[size, buffer.size - size]

@@ -27,8 +27,6 @@ module SwfFile
 
       while counter < length
         (bit_marker...8).each do |i|
-          #puts "#{i} #{bytes.encoding} #{bytes.valid_encoding?} #{bytes[byte_marker].bytes.to_a.inspect}"
-          # .force_encoding('ASCII-8BIT')
           bit       = ((bytes[byte_marker].ord & 0xff ) >> shift) & 1
           total     = (total << 1) + bit
           bit_index = i

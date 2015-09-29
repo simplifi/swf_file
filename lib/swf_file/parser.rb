@@ -13,7 +13,6 @@ module SwfFile
         decompress_buffer! if compressed?
 
         @bit_count  = ((@buffer[8].ord & 0xff) >> 3)
-        @buffer = @buffer.force_encoding('ASCII-8BIT')
       end # parse_header
 
       def parse_packed_bits
