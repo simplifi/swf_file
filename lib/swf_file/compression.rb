@@ -38,7 +38,8 @@ module SwfFile
         len = buffer[4..7].unpack('V').first - 8 
         lzma_props = buffer[12..16]
         compressed_data = buffer[17,buffer.size-17]
-        LZMA.decompress(lzma_props << [len].pack("Q") << compressed_data)
+        # Encoding::CompatibilityError: incompatible character encodings: ASCII-8BIT and UTF-8
+        LZMA.decompress(lzma_props.force_encoding('ASCII-8BIT') << [len].pack("Q").force_encoding('ASCII-8BIT') << compressed_data.force_encoding('ASCII-8BIT'))
       end
 
       def decompress_buffer!

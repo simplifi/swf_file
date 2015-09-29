@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
 
   s.name        = "swf_file"
-  s.version     = '1.1.1'
+  s.version     = '1.1.2'
   s.summary     = "SWF File is lightweight gem to read swf file headers from within a Ruby application."
 
   s.authors     = ["Joshua Ostrom"]
